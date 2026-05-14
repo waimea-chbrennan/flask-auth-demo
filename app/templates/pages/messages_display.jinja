@@ -1,0 +1,30 @@
+{#=====================================================
+  Messages display page
+=====================================================#}
+
+{% extends 'pages/base.jinja' %}
+
+
+{% block content %}
+
+    <h2>Messages</h2>
+
+
+    <section>
+        {% for message in messages%}
+            <article>
+                <h3>{{message.title}}</h3>
+                <p>{{message.body}}</p>
+                <p>Posted By: {{message.posted_by}}</p>
+
+                {% if message.posted_by==session.user.username}%}
+                <a href="/messages/edit/{{message.id}}">Edit Message</a>
+                {% endif%}  
+            </article>
+        {% else %}
+            <h3>No messages!</h3>
+        {% endfor %}
+    </section>
+    
+
+{% endblock %}

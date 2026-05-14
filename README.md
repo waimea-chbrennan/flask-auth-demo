@@ -62,4 +62,4 @@ See the [docs folder](docs) for a quick-start and guides to usage. In particular
 ### Development
 - `flask run` - Start the development server
 - `flask --help` - See all available commands
-
+- 1![docs/quick.md] - Dev in Docker Compose

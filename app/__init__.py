@@ -21,6 +21,22 @@ app = Flask(__name__)
 #===========================================================
 
 #-----------------------------------------------------------
+# Signup page
+#-----------------------------------------------------------
+@app.get("/user/new")
+def show_signup():
+    return render_template("pages/user_signup.jinja")
+
+#-----------------------------------------------------------
+# Login page
+#-----------------------------------------------------------
+@app.get("/user/login")
+def show_login():
+    return render_template("pages/user_login.jinja")
+
+
+
+#-----------------------------------------------------------
 # Welcome page
 #-----------------------------------------------------------
 @app.get("/")
@@ -29,19 +45,82 @@ def show_welcome():
 
 
 #-----------------------------------------------------------
-# Creature list page - Show all the creatures
+# Handle new user
 #-----------------------------------------------------------
-@app.get("/creatures")
-def show_all_creatures():
+@app.post("/user")
+def process_new_user():
+
+    forename = request.form.get('forename', '').strip()
+    surname  = request.form.get('surname',  '').strip()
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
+
+    with connect_db() as db:
+        sql = "SELECT username FROM users WHERE username=?"
+        params = (username,)
+        user = db.execute(sql, params).fetchone()
+
+        if user:
+            flash(f"Username '{username}' already exists", "error")
+            return redirect("/user/new")
+
+        pass_hash = generate_password_hash(password)
+
+        sql = """
+            INSERT INTO users (username, password_hash, forename, surname)
+            VALUES (?, ?, ?, ?)
+        """
+        params = (username, pass_hash, forename, surname)
+        db.execute(sql, params)
+
+        flash("Account created. Please login", "success")
+        return redirect("/user/login")
+
+
+#-----------------------------------------------------------
+# Handle Login Request
+#-----------------------------------------------------------
+@app.post("/user/login")
+def login_user():
+    username = request.form.get('username', '').strip().lower()
+    password = request.form.get('password', '').strip()
+
     with connect_db() as db:
         sql = """
-            SELECT id, species, name
-            FROM creatures
+            SELECT username, password_hash, forename, surname
+            FROM users
+            WHERE username=?
         """
-        params = ()
-        creatures = db.execute(sql, params).fetchall()
+        params = (username,)
+        user = db.execute(sql, params).fetchone()
 
-        return render_template("pages/creature_list.jinja", creatures=creatures)
+        if not user:
+            flash(f"Unknown user", "error")
+            return redirect("/user/login")
+
+        if not check_password_hash(user["password_hash"], password):
+            flash(f"Incorrect password", "error")
+            return redirect("/user/login")
+
+        session["logged_in"] = True
+        session["user"] = {
+            "username": username,
+            "forename": user["forename"],
+            "surname":  user["surname"],
+        }
+
+        flash("Login successful", "success")
+        return redirect("/")
+
+#-----------------------------------------------------------
+# Logout Past
+#-----------------------------------------------------------
+@app.get("/user/logout")
+def logout():
+    session.clear()
+    flash(f"You have been logged out", "success")
+    return redirect("/")
+
 
 
 #-----------------------------------------------------------
