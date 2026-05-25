@@ -9,6 +9,17 @@
 
     <h2>Compose Message</h2>
 
-    
+    <form action="/messages/new" method="post">
+      <label>
+        Message Title
+        <input type="text" name="title" required>
+      </label>
+      <label>
+        Body
+        <input type="text" name="body" required>
+      </label>
+      <button><i data-lucide="message-square-check"></i>Post Message</button>
+      
+    </form>
 
 {% endblock %}

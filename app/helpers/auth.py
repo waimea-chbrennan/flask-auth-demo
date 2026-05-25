@@ -27,4 +27,14 @@ def login_required(func):
 
     return wrapper
 
+#---------------------------------------------------------
+# Helper to check if is owner or admin for messages 
+#---------------------------------------------------------
+def is_owner_or_admin(owner_username):
+    if(owner_username==session["user"]["username"]):
+        return true
+    if(session["user"]["is_admin"]):
+        return true
 
+    #Neither 
+    return false

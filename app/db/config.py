@@ -24,14 +24,16 @@ class UsersTable:
             username      TEXT PRIMARY KEY,
             password_hash    TEXT NOT NULL,
             forename        TEXT NOT NULL,
-            surname        TEXT NOT NULL
+            surname        TEXT NOT NULL,
+            is_admin        INTEGER NOT NULL
         )
     """
 
     SEED_DATA = """
-        INSERT INTO users (username, password_hash, forename, surname)
-        VALUES ("admin","scrypt:32768:8:1$Bqx7M9OF67CbYB4d$a6c1a9d7837c934bcd26ab17b3898580eb4f42a1a30f4de50a288ef88a107b48b739579cce9dfe97c94a922378772a6cf53de828cf2e808b62e8618401eb9c7b", "Super", "Admin")
-    
+        INSERT INTO users (username, password_hash, forename, surname, is_admin)
+        VALUES ("admin","scrypt:32768:8:1$Bqx7M9OF67CbYB4d$a6c1a9d7837c934bcd26ab17b3898580eb4f42a1a30f4de50a288ef88a107b48b739579cce9dfe97c94a922378772a6cf53de828cf2e808b62e8618401eb9c7b", "Super", "Admin", 1), 
+               ("erinrune","scrypt:32768:8:1$Bqx7M9OF67CbYB4d$a6c1a9d7837c934bcd26ab17b3898580eb4f42a1a30f4de50a288ef88a107b48b739579cce9dfe97c94a922378772a6cf53de828cf2e808b62e8618401eb9c7b", "Erin", "Rune", 0),
+               ("abrain","scrypt:32768:8:1$Bqx7M9OF67CbYB4d$a6c1a9d7837c934bcd26ab17b3898580eb4f42a1a30f4de50a288ef88a107b48b739579cce9dfe97c94a922378772a6cf53de828cf2e808b62e8618401eb9c7b", "Arthur", "Brain", 0)
     """
 
 # Add more table classes here...
@@ -53,10 +55,9 @@ class MessagesTable:
     """
 
     SEED_DATA = """
-    INSERT INTO messages (title, body, posted_by)
-    VALUES ("Hello, World", "The new site does indeed work!", "admin")
-
-    
+        INSERT INTO messages (title, body, posted_by)
+        VALUES ("Hello, World", "The new site does indeed work!", "admin"),
+                ("Industrial Washing Machines", "Screw these new smart front loaders that break after 2 years. Get a proper one that you can even turn into a go cart.", "erinrune")
     """
 
 

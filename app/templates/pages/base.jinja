@@ -16,6 +16,7 @@
     <link rel="icon" href="/static/images/icon.svg">
 
     <script src="/static/js/utils.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <link rel="stylesheet" href="/static/css/reset.css">
     <link rel="stylesheet" href="/static/css/messages.css">
@@ -26,22 +27,22 @@
 
     <header>
         <a href="/">
-            <img src="/static/images/icon.svg" alt="Creature Icon" class="logo">
+            <i data-lucide="messages-square"></i>
         </a>
-
         <h1>Demo Site</h1>
 
+        
+
         <nav>
-            <a href="/">Home</a>
             {% if session.logged_in%}
-                <p>Welcome, {{session.user.forename}}</p>
-                <a href="/user/logout">Logout</a>              
+                <p>Welcome, {{ session["user"]["forename"] }}</p>
+                <a href="/user/logout"><i data-lucide="log_out"></i></a>
+                <a href="/messages"><i data-lucide="message-square-text"></i></a>              
             {% else%}
                 <a href="/user/new">Signup</a>
                 <a href="/user/login">Login</a>
             {% endif %}         
 
-            <a href="/help">Help</a>
         </nav>
     </header>
 
@@ -56,6 +57,10 @@
     </main>
 
 </body>
+
+<script>
+    lucide.createIcons();
+</script>
 
 </html>
 

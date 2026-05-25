@@ -9,6 +9,20 @@
 
     <h2>Edit Message</h2>
 
-    
+
+    <form action="/messages/edit/{{message.id}}" method="post">
+      <label>
+        Message Title
+        <input type="text" name="title" required value="{{message.title}}">
+      </label>
+      <label>
+        Body
+        <input type="text" name="body" required value="{{message.body}}">
+      </label>
+      <button>Update Message</button>
+    </form>
+
+
+    <a href="/messages/delete/{{message.id}}">Delete Message</a>
 
 {% endblock %}

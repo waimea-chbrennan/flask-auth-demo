@@ -45,6 +45,122 @@ def show_welcome():
 
 
 #-----------------------------------------------------------
+# Message display page
+#-----------------------------------------------------------
+@login_required
+@app.get("/messages")
+def show_messages():
+    with connect_db() as db:
+        sql = "SELECT * FROM messages"
+        messages = db.execute(sql).fetchall()
+    return render_template("pages/messages_display.jinja", messages=messages)
+
+#-----------------------------------------------------------
+# New Message page
+#-----------------------------------------------------------
+@login_required
+@app.get("/messages/new")
+def show_new_message():
+    return render_template("pages/messages_new.jinja")
+
+
+
+#-----------------------------------------------------------
+# Edit Message page
+#-----------------------------------------------------------
+@login_required
+@app.get("/messages/edit/<int:id>")
+def show_edit_message(id):
+
+
+    with connect_db() as db:
+        sql = "SELECT * FROM messages WHERE id=?"
+        params = (id,)
+        message = db.execute(sql, params).fetchone()
+
+    # Only the owner/admin should be able to edit their own message
+   
+    posted_by = message["posted_by"]
+    if (not is_owner_or_admin(posted_by)): 
+        return redirect("/messages")
+
+    return render_template("pages/messages_edit.jinja",message=message)
+
+
+#-----------------------------------------------------------
+# Handle New Message
+#-----------------------------------------------------------
+@login_required
+@app.post("/messages/new")
+def add_new_message():
+    title = request.form.get('title', '').strip()
+    body = request.form.get('body', '').strip()
+
+
+    with connect_db() as db:
+        sql = """INSERT INTO messages (title, body, posted_by)
+                    VALUES (?,?,?)
+            """
+        params = (title, body, session["user"]["username"])
+        message = db.execute(sql, params).fetchone()
+    return redirect("/messages")
+
+
+#-----------------------------------------------------------
+# Handle Edit Message
+#-----------------------------------------------------------
+@login_required
+@app.post("/messages/edit/<int:id>")
+def process_edit_message(id):
+
+    # Only the owner should be able to edit their own message
+    with connect_db() as db:
+        sql = "SELECT posted_by FROM messages WHERE id=?"
+        params = (id,)
+        posted_by = db.execute(sql, params).fetchone()["posted_by"]
+    
+    if ( not is_owner_or_admin(posted_by) ): 
+        return redirect("/messages")
+
+
+    title = request.form.get('title', '').strip()
+    body = request.form.get('body', '').strip()
+
+
+    with connect_db() as db:
+        sql = """UPDATE messages SET title = ?, body = ? WHERE id = ?
+            """
+        params = (title, body, id)
+        message = db.execute(sql, params).fetchone()
+    return redirect("/messages")
+
+
+#-----------------------------------------------------------
+# Handle Delete Message
+#-----------------------------------------------------------
+@login_required
+@app.get("/messages/delete/<int:id>")
+def process_delete_message(id):
+
+    # Only the owner or admin should be able to delete their own message
+    with connect_db() as db:
+        sql = "SELECT posted_by FROM messages WHERE id=?"
+        params = (id,)
+        posted_by = db.execute(sql, params).fetchone()["posted_by"]
+    
+    if (not is_owner_or_admin(posted_by)): 
+        return redirect("/messages")
+
+    with connect_db() as db:
+        sql = """DELETE FROM messages WHERE id = ?
+            """
+        params = (id,)
+        result = db.execute(sql, params)
+    return redirect("/messages")
+
+
+
+#-----------------------------------------------------------
 # Handle new user
 #-----------------------------------------------------------
 @app.post("/user")
@@ -87,7 +203,7 @@ def login_user():
 
     with connect_db() as db:
         sql = """
-            SELECT username, password_hash, forename, surname
+            SELECT username, password_hash, forename, surname, is_admin
             FROM users
             WHERE username=?
         """
@@ -107,6 +223,7 @@ def login_user():
             "username": username,
             "forename": user["forename"],
             "surname":  user["surname"],
+            "is_admin": user["is_admin"],
         }
 
         flash("Login successful", "success")
@@ -121,20 +238,6 @@ def logout():
     flash(f"You have been logged out", "success")
     return redirect("/")
 
-
-
-#-----------------------------------------------------------
-# Help page - Show some help
-#-----------------------------------------------------------
-@app.get("/help")
-def show_help():
-
-    flash("Flash test message")
-    flash("Flash test message with a longer bit of text")
-    flash("Success test message", "success")
-    flash("Error test message", "error")
-
-    return render_template("pages/help.jinja")
 
 
 #===========================================================
