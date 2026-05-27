@@ -57,9 +57,31 @@ class MessagesTable:
     SEED_DATA = """
         INSERT INTO messages (title, body, posted_by)
         VALUES ("Hello, World", "The new site does indeed work!", "admin"),
-                ("Industrial Washing Machines", "Screw these new smart front loaders that break after 2 years. Get a proper one that you can even turn into a go cart.", "erinrune")
+                ("Industrial Washing Machines", "Screw these new smart front loaders that break after 2 years. Get a proper one that you can even turn into a go cart.", "erinrune"),
+                ("CANIPOST", "HELP ME I AM A MESSAGE", "abrain")
+    """
+class RepliesTable:
+
+    NAME = "replies"
+
+    SCHEMA = """
+        CREATE TABLE replies (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            message_id  INTEGER NOT NULL,
+            is_active  BOOLEAN NOT NULL CHECK (is_active IN (0,1)) DEFAULT 1,
+            body        TEXT NOT NULL,
+            posted_by   TEXT NOT NULL,
+
+            FOREIGN KEY (posted_by) REFERENCES users(id),
+            FOREIGN KEY (message_id) REFERENCES messages(id)
+        )
+
     """
 
+    SEED_DATA = """
+        INSERT INTO replies (message_id, body, posted_by)
+        VALUES (3,"Woah that sucks", "erinrune")
+    """
 
 #----------------------------------------------------------------------------
 # Table registry
@@ -79,6 +101,7 @@ class MessagesTable:
 TABLES = [
     UsersTable,
     MessagesTable,
+    RepliesTable,
     # Add more tables here...
 ]
 

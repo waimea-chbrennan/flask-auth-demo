@@ -32,9 +32,9 @@ def login_required(func):
 #---------------------------------------------------------
 def is_owner_or_admin(owner_username):
     if(owner_username==session["user"]["username"]):
-        return true
+        return True
     if(session["user"]["is_admin"]):
-        return true
+        return True
 
     #Neither 
-    return false
+    return False

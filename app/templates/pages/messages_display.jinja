@@ -17,9 +17,32 @@
                 <p>{{message.body}}</p>
                 <p>Posted By: {{message.posted_by}}</p>
 
+
+                {% for reply in replies %}
+                    {% if reply.message_id==message.id%}
+                    <section>
+                        <p>{{reply.body}}</p>
+                        <p><strong>—{{reply.posted_by}}</strong></p>
+
+                        {% if reply.posted_by==session["user"]["username"] or session["user"]["is_admin"]%}
+                            <a href="/reply/delete/{{reply.id}}"><button><i data-lucide="trash"></i></button></a>    
+                        {% endif %}
+                        
+                    </section>
+                    {% endif %}
+                {% endfor %}
+
+
+
+
                 {% if message.posted_by==session["user"]["username"] or session["user"]["is_admin"]%}
                 <a href="/messages/edit/{{message.id}}"><button>Edit</button></a>
                 {% endif%}  
+                <a href="/messages/edit/{{message.id}}"><button>Edit</button></a>
+                
+
+
+
             </article>
         {% else %}
             <h3>No messages!</h3>

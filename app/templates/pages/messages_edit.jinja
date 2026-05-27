@@ -19,10 +19,11 @@
         Body
         <input type="text" name="body" required value="{{message.body}}">
       </label>
-      <button>Update Message</button>
+      <button><i data-lucide="mail-check"></i>Update Message</button>
+      <a href="/messages/delete/{{message.id}}"><button><i data-lucide="trash"></i>Delete Message</button></a>
     </form>
 
 
-    <a href="/messages/delete/{{message.id}}">Delete Message</a>
+    
 
 {% endblock %}

@@ -134,22 +134,14 @@ form {
         }
     }
 
-    button {
-        background-color: var(--accent-col);
-        color: var(--text-col-inv);
-        border-radius: var(--border-radius);
-        padding: 0.25rem 0.5rem;
-        margin-top: var(--padding);
-        max-width: 50%;
-    }
-
 }
 
 /* Messages List --------------------------------------------------*/
 
 #user-messages {
-    display: grid;
-    gap: 2rem;
+    display: block;
+    gap: var(--gap);
+
     grid-template-columns: 1fr;
 
     @media (width >= 500px) {
@@ -161,23 +153,49 @@ form {
     }
 
     .user-message {
+        margin: var(--padding-sm);
         padding: var(--padding);
+        gap: var(--gap);
 
         background-color: var(--back-col-dark);
         border: 2px solid var(--border-col);
-        border-radius: 0.5rem;
+        border-radius: var(--border-radius);
 
         h3 {
             color: var(--accent-col);
+        }
+
+        section {
+            background-color: var(--base-col-light);
+            border-radius: var(--border-radius);
+            border: 2px solid var(--border-col);
+            gap: var(--gap);
+            margin: var(--padding-sm);
+            padding: var(--padding);
+
         }
     }
 }
 
 
+/* Buttons --------------------------------------------------*/
+
  button {
-        background-color: var(--accent-col);
-        color: var(--text-col-inv);
-        border-radius: var(--border-radius);
-        padding: 0.25rem 0.5rem;
-        margin-top: var(--padding);
-    }
+    background-color: var(--accent-col);
+    color: var(--text-col-inv);
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-col);
+
+    padding: 0.25rem 0.5rem;
+    margin-top: var(--padding);
+    display: flex;
+    flex-direction: row;
+}
+
+button > i {
+    margin-right: var(--padding-sm);
+}
+
+a {
+    text-decoration: none;
+}

@@ -53,7 +53,9 @@ def show_messages():
     with connect_db() as db:
         sql = "SELECT * FROM messages"
         messages = db.execute(sql).fetchall()
-    return render_template("pages/messages_display.jinja", messages=messages)
+        sql = "SELECT * FROM replies"
+        replies = db.execute(sql).fetchall()
+    return render_template("pages/messages_display.jinja", messages=messages, replies=replies)
 
 #-----------------------------------------------------------
 # New Message page
@@ -103,6 +105,7 @@ def add_new_message():
             """
         params = (title, body, session["user"]["username"])
         message = db.execute(sql, params).fetchone()
+    flash("Message Posted", "info")
     return redirect("/messages")
 
 
@@ -132,6 +135,8 @@ def process_edit_message(id):
             """
         params = (title, body, id)
         message = db.execute(sql, params).fetchone()
+    
+    flash("Message Edited", "info")
     return redirect("/messages")
 
 
@@ -156,6 +161,8 @@ def process_delete_message(id):
             """
         params = (id,)
         result = db.execute(sql, params)
+
+    flash("Message Deleted", "message")
     return redirect("/messages")
 
 
